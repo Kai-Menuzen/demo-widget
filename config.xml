@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:sl="http://www.signagelive.com/widgets" id="sl-builder-example-1.0.0" version="1.0.0" width="1920" height="1080">
+    <name>Menuzen</name>
+    <description> </description>
+    <author>Menuzen</author>
+    <content src="index.html"/>
+    <icon src="media/menuzen.png" sl:thumbnail="large"/>
+</widget>
