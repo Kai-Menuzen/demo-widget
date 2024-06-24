@@ -3,7 +3,7 @@ const fs = require('fs');
 const archiver = require('archiver');
 
 var distDir = process.cwd() + '/dist';
-var output = fs.createWriteStream(distDir + '/menuzen-widget.zip');
+var output = fs.createWriteStream(distDir + '/menuzen-widget-old-device.zip');
 var archive = archiver('zip');
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, 0744);
