@@ -2,16 +2,20 @@ window.onError = function () {};
 window.onComplete = function () {};
 
 window.onVideoTimeUpdate = function (video, currentTime) {
-  const second = currentTime / 1000;
-  animationDivs.forEach((div) => {
-    const start = parseInt(div.getAttribute('data-start'), 10);
-    const end = parseInt(div.getAttribute('data-end'), 10);
-    if (second >= start && second <= end) {
-      div.style.opacity = 1;
-    } else {
-      div.style.opacity = 0;
+  var second = currentTime / 1000;
+
+  if (window.animationDivs) {
+    for (var ind = 0; ind < animationDivs.length; ind++) {
+      var animationDiv = animationDivs[ind];
+      var start = parseInt(animationDiv.getAttribute('data-start'), 10);
+      var end = parseInt(animationDiv.getAttribute('data-end'), 10);
+      if (second >= start && second <= end) {
+        animationDiv.style.opacity = 1;
+      } else {
+        animationDiv.style.opacity = 0;
+      }
     }
-  });
+  }
 };
 
 function playSLVideo() {

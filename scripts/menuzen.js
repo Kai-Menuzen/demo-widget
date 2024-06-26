@@ -1,14 +1,17 @@
-window.addEventListener('widget-init', function () {
+document.addEventListener(
+  'DOMContentLoaded',
+  function () {
   window.animationDivs = document.querySelectorAll('[data-start]');
-  var localItems = JSON.parse(localStorage.getItem('menuzenItems'));
+  playSLVideo();
+  if (localStorage.getItem('menuzenItems')) {
+    var localItems = JSON.parse(localStorage.getItem('menuzenItems'));
+  }
   if (localItems) {
     items = merge_options(items, localItems);
   }
   updateUI();
-  playSLVideo();
   loadData();
-});
+  },
+  false
+);
 
-setTimeout(() => {
-  window.dispatchEvent(new CustomEvent('widget-init'));
-}, 1000);
