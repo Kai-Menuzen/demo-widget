@@ -8,3 +8,10 @@ function merge_options(obj1, obj2) {
   }
   return obj3;
 }
+function repeatString(str, num) {
+  var result = '';
+  for (var i = 0; i < num; i++) {
+    result += str;
+  }
+  return result;
+}

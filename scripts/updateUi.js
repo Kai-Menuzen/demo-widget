@@ -29,7 +29,7 @@ function updatePrice(element, replaceArr, targetArr) {
   if (targetArr[1]) {
     newTextReplace = targetArr[1];
   } else {
-    newTextReplace = '0'.repeat(replaceArrLength);
+    newTextReplace = repeatString('0', replaceArrLength);
   }
   var lastIndex = newText.lastIndexOf(replaceArr[1]);
   if (lastIndex != -1) {
