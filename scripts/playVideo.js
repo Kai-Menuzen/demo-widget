@@ -18,15 +18,8 @@ window.onVideoTimeUpdate = function (video, currentTime) {
   }
 };
 
-function stopVideo() {
-  Signagelive.stopVideo();
-}
-
-function onWidgetClosingNotificationReceived() {
-  stopVideo();
-}
-
 function playSLVideo() {
+  Signagelive.sendReadyToDisplay();
   Signagelive.playVideo(
     'media/video.mp4', // File to play (relative to index.html)
     0, // x pos
@@ -42,8 +35,5 @@ function playSLVideo() {
     }
   ).then(function () {
     Signagelive.log('SR');
-    Signagelive.sendReadyToDisplay();
   });
-
-  Signagelive.onWidgetClosing(onWidgetClosingNotificationReceived);
 }
