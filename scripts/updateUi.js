@@ -171,7 +171,7 @@ function priceFormat(number, options) {
       if (!options.currencyDecimal) {
         return '';
       } else {
-        return '.' + '0'.repeat(options.currencyDecimal);
+        return '.' + repeatString('0', options.currencyDecimal);
       }
     }
   };
