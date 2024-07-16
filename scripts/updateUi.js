@@ -18,28 +18,8 @@ function extractNumbersFromString(inputString) {
   return numbers;
 }
 
-function updatePrice(element, replaceArr, targetArr) {
-  var newText = element.innerHTML;
-  newText = newText.replace(replaceArr[0], targetArr[0]);
-  var newTextReplace;
-  var replaceArrLength = 0;
-  if (replaceArr[1]) {
-    replaceArrLength = replaceArr[1].toString().length;
-  }
-  if (targetArr[1]) {
-    newTextReplace = targetArr[1];
-  } else {
-    newTextReplace = repeatString('0', replaceArrLength);
-  }
-  var lastIndex = newText.lastIndexOf(replaceArr[1]);
-  if (lastIndex != -1) {
-    newText =
-      newText.substring(0, lastIndex) +
-      newTextReplace +
-      newText.substring(lastIndex + replaceArrLength);
-  } else if (newTextReplace) {
-    newText = newText.substring(0) + '.' + newTextReplace;
-  }
+function updatePrice(element, updatePrice) {
+  var newText = displayPriceHtml(updatePrice);
   element.innerHTML = newText;
 }
 
@@ -51,11 +31,7 @@ function updateUI() {
     var key = element.getAttribute('data-key');
     var type = element.getAttribute('data-type');
     if (key == 'price') {
-      var replaceArr = extractNumbersFromString(element.innerHTML);
-      if (!replaceArr.length) {
-        continue;
-      }
-      var targetArr;
+      var price;
       if (
         type == 'item' &&
         items[id] &&
@@ -63,13 +39,13 @@ function updateUI() {
         items[id].variations[0] &&
         items[id].variations[0].price
       ) {
-        targetArr = items[id].variations[0].price.toString().split('.');
+        price = items[id].variations[0].price;
       }
       if (type == 'variation' && variation[id] && variation[id].price) {
-        targetArr = variation[id].price.toString().split('.');
+        price = variation[id].price;
       }
-      if (targetArr) {
-        updatePrice(element, replaceArr, targetArr);
+      if (price) {
+        updatePrice(element, price);
       }
     } else {
       if (type == 'item' && items[id]) {
@@ -80,4 +56,148 @@ function updateUI() {
       }
     }
   }
+}
+
+function displayPriceHtml(price) {
+  var pricePosition = window.menuzenDesignData.pricePosition;
+  var currency = window.menuzenDesignData.currency;
+  var currencyDecimal = window.menuzenDesignData.currencyDecimal;
+
+  var priceValue = '';
+  if (price) {
+    priceValue = price;
+  }
+
+  var showSymbol = false;
+  if (currency) {
+    showSymbol = true;
+  }
+
+  var symbol = '';
+  if (currency) {
+    symbol = currency;
+  }
+
+  var formatPrice = priceFormat(priceValue, {
+    showSymbol: showSymbol,
+    symbol: symbol,
+    currencyDecimal: currencyDecimal,
+  });
+
+  var pointIndex = formatPrice.indexOf('.');
+  if (pointIndex !== -1) {
+    if (pricePosition) {
+      if (pricePosition !== 'normal') {
+        var htmlTag = pricePosition;
+        return (
+          formatPrice.substring(0, pointIndex) +
+          '<' +
+          htmlTag +
+          '>' +
+          '.' +
+          formatPrice.substring(pointIndex + 1) +
+          '</' +
+          htmlTag +
+          '>'
+        );
+      }
+    }
+  }
+  return formatPrice;
+}
+
+function priceFormat(number, options) {
+  if (typeof options === 'undefined') {
+    options = {};
+  }
+
+  var currentCurrency;
+  for (var i = 0; i < currencies.length; i++) {
+    if (currencies[i].iso === options.symbol) {
+      currentCurrency = currencies[i];
+      break;
+    }
+  }
+  if (typeof currentCurrency === 'undefined') {
+    currentCurrency = undefined;
+  }
+
+  var defaultOptions = {
+    decPlaces: 3,
+    decSep: '.',
+    thouSep:
+      currentCurrency && currentCurrency.thousandsSeparator
+        ? currentCurrency.thousandsSeparator
+        : ',',
+    showSymbol: true,
+    symbol: 'US',
+  };
+
+  var mergedOptions = merge(defaultOptions, options);
+
+  var decPlaces = mergedOptions.decPlaces;
+  var thouSep = mergedOptions.thouSep;
+  var showSymbol = mergedOptions.showSymbol;
+
+  var sign;
+  if (showSymbol) {
+    if (currentCurrency) {
+      sign = currentCurrency.symbol;
+    } else {
+      sign = '$';
+    }
+  } else {
+    sign = '';
+  }
+
+  var numberValue = Math.abs(Number(number) || 0).toFixed(decPlaces);
+  var i = parseInt(numberValue);
+
+  var renderDec = function () {
+    if (!decPlaces) {
+      return '';
+    }
+    var decValue = Math.abs(number - i)
+      .toFixed(!options.currencyDecimal ? decPlaces : options.currencyDecimal)
+      .slice(2);
+
+    if (Number(decValue) > 0) {
+      if (!options.currencyDecimal) {
+        return '.' + decValue.replace(/^0+|0+$/g, '');
+      } else {
+        return '.' + decValue;
+      }
+    } else {
+      if (!options.currencyDecimal) {
+        return '';
+      } else {
+        return '.' + '0'.repeat(options.currencyDecimal);
+      }
+    }
+  };
+
+  var chunkArray = chunk(i.toString().split('').reverse(), 3);
+  var value =
+    chunkArray
+      .reverse()
+      .map(function (arr) {
+        return arr.reverse().join('');
+      })
+      .join(thouSep) + renderDec();
+
+  var prefix = '';
+  var suffix = '';
+  if (currentCurrency) {
+    if (currentCurrency.symbolOnLeft) {
+      prefix = sign + (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '');
+      suffix = currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '';
+    } else {
+      prefix = '';
+      suffix = (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '') + sign;
+    }
+  } else {
+    prefix = sign;
+  }
+
+  return prefix + value + suffix;
 }
