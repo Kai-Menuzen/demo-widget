@@ -1,6 +1,6 @@
 function loadData() {
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'https://api-internal-board.menuzen.app', true);
+  xhr.open('POST', window.internalAPI, true);
   xhr.setRequestHeader('Content-Type', 'application/json');
   var payload = JSON.stringify({
     query:
