@@ -74,7 +74,7 @@ function loadSubwayData() {
             });
           });
 
-          setLocalStorage('menuzenItems', JSON.stringify(items));
+          localStorage.setItem('menuzenItems', JSON.stringify(items));
           updateUI();
         } else {
         }
