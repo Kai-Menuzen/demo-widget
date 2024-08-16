@@ -66,15 +66,15 @@ function loadSubwayData() {
             priceObj[item.id] = item;
           }
 
-          Object.values(items).forEach((item) => {
-            item.variations.forEach((variation) => {
+          Object.values(items).forEach(function (item) {
+            item.variations.forEach(function (variation) {
               if (priceObj[variation.id] !== undefined) {
                 variation.price = priceObj[variation.id].price;
               }
             });
           });
 
-          localStorage.setItem('menuzenItems', JSON.stringify(items));
+          setLocalStorage('menuzenItems', JSON.stringify(items));
           updateUI();
         } else {
         }
