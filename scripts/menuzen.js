@@ -23,17 +23,15 @@ document.addEventListener(
       if (currentTime - lastUpdated < 1000 * 60 * 2) {
         return;
       }
-    } else {
-      localStorage.setItem('menuzenLastUpdated', currentTime);
-      return;
     }
   
+    localStorage.setItem('menuzenLastUpdated', currentTime);
+
     if (window.plugin == 'subway') {
       loadSubwayData();
     } else {
       loadData();
     }
-    localStorage.setItem('menuzenLastUpdated', currentTime);
   },
   false
 );
