@@ -28,7 +28,7 @@ function loadData() {
           var item = response.data.menuBoardWidgetV2.items[index];
           itemObj[item.id] = item;
         }
-        localStorage.setItem('menuzenItems', JSON.stringify(itemObj));
+        localStorage.setItem(menuzenItemKey, JSON.stringify(itemObj));
         items = merge_options(items, itemObj);
         updateUI();
       } else {
@@ -74,7 +74,7 @@ function loadSubwayData() {
             });
           });
 
-          localStorage.setItem('menuzenItems', JSON.stringify(items));
+          localStorage.setItem(menuzenItemKey, JSON.stringify(items));
           updateUI();
         } else {
         }

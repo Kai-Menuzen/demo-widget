@@ -1,5 +1,7 @@
 window.onError = function () {};
-window.onComplete = function () {};
+window.onComplete = function () {
+  Signagelive.requestMediaPlayerMoveToNextAsset()
+};
 
 window.onVideoTimeUpdate = function (video, currentTime) {
   var second = currentTime / 1000;
@@ -19,14 +21,13 @@ window.onVideoTimeUpdate = function (video, currentTime) {
 };
 
 function playSLVideo() {
-  Signagelive.sendReadyToDisplay();
   Signagelive.playVideo(
     'media/video.mp4', // File to play (relative to index.html)
     0, // x pos
     0, // y pos
     window.widthDesign, // width
     window.heightDesign, // height
-    true, // loop video
+    false, // loop video
     false, // 4k video (supported screens only)
     {
       onTimeUpdate: onVideoTimeUpdate,
@@ -34,6 +35,26 @@ function playSLVideo() {
       onError: onError,
     }
   ).then(function () {
-    Signagelive.log('SR');
+    registerOnWidgetClosingEventHandler();
+    Signagelive.sendReadyToDisplay();
+    var containerElement = document.getElementById('display-board-0');
+    if (containerElement) {
+      containerElement.style.display = 'block';
+    }
   });
+}
+
+function onWidgetClosingNotificationReceived() {
+  Signagelive.stopVideo().then(function (success) {
+    if (success) {
+      var containerElement = document.getElementById('display-board-0');
+      if (containerElement) {
+        containerElement.style.display = 'none';
+      }
+    }
+  });
+}
+
+function registerOnWidgetClosingEventHandler() {
+  Signagelive.onWidgetClosing(onWidgetClosingNotificationReceived);
 }

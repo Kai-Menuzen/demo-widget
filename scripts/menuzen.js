@@ -3,13 +3,15 @@ document.addEventListener(
   function () {
     window.animationDivs = document.querySelectorAll('[data-start]');
     try {
-      playSLVideo();
+      if (window.videoBackgroundLength) {
+        playSLVideo();
+      }
     } catch (error) {
       console.log(error);
     }
 
-    if (localStorage.getItem('menuzenItems')) {
-      var localItems = JSON.parse(localStorage.getItem('menuzenItems'));
+    if (localStorage.getItem(menuzenItemKey)) {
+      var localItems = JSON.parse(localStorage.getItem(menuzenItemKey));
     }
     if (localItems) {
       items = merge_options(items, localItems);
