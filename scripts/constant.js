@@ -1,5 +1,3 @@
-var menuzenItemKey = 'menuzen' + window.randomId;
-
 var currencies = [
   {
     iso: 'AD',

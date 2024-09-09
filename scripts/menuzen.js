@@ -2,6 +2,7 @@ document.addEventListener(
   'DOMContentLoaded',
   function () {
     window.animationDivs = document.querySelectorAll('[data-start]');
+    window.menuzenItemKey = 'menuzen' + window.randomId;
     try {
       if (window.videoBackgroundLength) {
         playSLVideo();
