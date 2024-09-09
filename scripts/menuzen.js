@@ -19,7 +19,9 @@ document.addEventListener(
     updateUI();
 
     var currentTime = Date.now();
-    var lastUpdated = localStorage.getItem('menuzenLastUpdated');
+    var lastUpdated = localStorage.getItem(
+      'menuzenLastUpdated' + window.randomId
+    );
 
     if (lastUpdated) {
       if (currentTime - lastUpdated < 1000 * 60 * 2) {
@@ -27,7 +29,7 @@ document.addEventListener(
       }
     }
   
-    localStorage.setItem('menuzenLastUpdated', currentTime);
+    localStorage.setItem('menuzenLastUpdated' + window.randomId, currentTime);
 
     if (window.plugin == 'subway') {
       loadSubwayData();
