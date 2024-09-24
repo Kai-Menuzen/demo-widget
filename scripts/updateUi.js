@@ -18,8 +18,8 @@ function extractNumbersFromString(inputString) {
   return numbers;
 }
 
-function updatePrice(element, updatePrice) {
-  var newText = displayPriceHtml(updatePrice);
+function updatePrice(element, updatePrice, showSymbol) {
+  var newText = displayPriceHtml(updatePrice, showSymbol);
   element.innerHTML = newText;
 }
 
@@ -30,6 +30,8 @@ function updateUI() {
     var id = element.getAttribute('data-id');
     var key = element.getAttribute('data-key');
     var type = element.getAttribute('data-type');
+    var showSymbol = element.getAttribute('data-showSymbol');
+
     if (key == 'price') {
       var price;
       if (
@@ -45,7 +47,7 @@ function updateUI() {
         price = variation[id].price;
       }
       if (price) {
-        updatePrice(element, price);
+        updatePrice(element, price, showSymbol !== 'false');
       }
     } else {
       if (type == 'item' && items[id]) {
@@ -58,8 +60,9 @@ function updateUI() {
   }
 }
 
-function displayPriceHtml(price) {
-  var pricePosition = window.menuzenDesignData.pricePosition;
+function displayPriceHtml(price, showSymbol) {
+  var pricePosition = window.menuzenDesignData.designSetting.pricePosition;
+  var symbolPosition = window.menuzenDesignData.designSetting.symbolPosition;
   var currency = window.menuzenDesignData.currency;
   var currencyDecimal = window.menuzenDesignData.currencyDecimal;
 
@@ -68,40 +71,32 @@ function displayPriceHtml(price) {
     priceValue = price;
   }
 
-  var showSymbol = false;
-  if (currency) {
-    showSymbol = true;
-  }
-
   var symbol = '';
   if (currency) {
     symbol = currency;
   }
 
   var formatPrice = priceFormat(priceValue, {
-    showSymbol: showSymbol,
+    showSymbol: showSymbol && !!symbol,
     symbol: symbol,
     currencyDecimal: currencyDecimal,
+    symbolPosition: symbolPosition,
   });
 
   var pointIndex = formatPrice.indexOf('.');
-  if (pointIndex !== -1) {
-    if (pricePosition) {
-      if (pricePosition !== 'normal') {
-        var htmlTag = pricePosition;
-        return (
-          formatPrice.substring(0, pointIndex) +
-          '<' +
-          htmlTag +
-          '>' +
-          '.' +
-          formatPrice.substring(pointIndex + 1) +
-          '</' +
-          htmlTag +
-          '>'
-        );
-      }
-    }
+  if (pointIndex !== -1 && pricePosition && pricePosition !== 'normal') {
+    var htmlTag = pricePosition;
+    return (
+      formatPrice.substring(0, pointIndex) +
+      '<' +
+      htmlTag +
+      '>' +
+      '.' +
+      formatPrice.substring(pointIndex + 1) +
+      '</' +
+      htmlTag +
+      '>'
+    );
   }
   return formatPrice;
 }
@@ -185,15 +180,31 @@ function priceFormat(number, options) {
       })
       .join(thouSep) + renderDec();
 
+  var symbolPosition = mergedOptions.symbolPosition;
+
   var prefix = '';
   var suffix = '';
   if (currentCurrency) {
-    if (currentCurrency.symbolOnLeft) {
-      prefix = sign + (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '');
-      suffix = currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '';
+    if (symbolPosition && symbolPosition !== 'auto') {
+      if (symbolPosition === 'left') {
+        prefix =
+          sign + (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '');
+        suffix = currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '';
+      } else {
+        prefix = '';
+        suffix =
+          (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '') + sign;
+      }
     } else {
-      prefix = '';
-      suffix = (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '') + sign;
+      if (currentCurrency.symbolOnLeft) {
+        prefix =
+          sign + (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '');
+        suffix = currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '';
+      } else {
+        prefix = '';
+        suffix =
+          (currentCurrency.spaceBetweenAmountAndSymbol ? ' ' : '') + sign;
+      }
     }
   } else {
     prefix = sign;
