@@ -3,9 +3,18 @@ document.addEventListener(
   function () {
     window.animationDivs = document.querySelectorAll('[data-start]');
     window.menuzenItemKey = 'menuzen' + window.randomId;
+    var img = document.getElementById('menuzen-first-frame');
+    
+    if (img) {
+      img.style.opacity = 1;
+      setTimeout(function () {
+        img.style.opacity = 0;
+      }, 800);
+    }
+
     try {
       if (window.videoBackgroundLength) {
-        playSLVideo();
+        playCanvasVideo();
       }
     } catch (error) {
       console.log(error);
@@ -29,7 +38,7 @@ document.addEventListener(
         return;
       }
     }
-  
+
     localStorage.setItem('menuzenLastUpdated' + window.randomId, currentTime);
 
     if (window.plugin == 'subway') {

@@ -667,7 +667,7 @@ function Signagelive() {
           video1.style.width = mockWidth + 'px';
           video1.style.height = mockHeight + 'px';
           video1.style.visibility = 'visible';
-          video1.loop = true;
+          video1.loop = loop;
           video1.autoplay = true;
           video1.muted = true;
           // Add to DOM
