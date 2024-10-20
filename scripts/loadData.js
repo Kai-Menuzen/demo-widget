@@ -46,7 +46,7 @@ function loadSubwayData() {
     xhr.setRequestHeader('Content-Type', 'application/json');
     var payload = JSON.stringify({
       query:
-        'query GetSubwayItems($locationId: String!) { getSubwayWidgetItems(locationId: $locationId) { id price } }',
+        'query GetSubwayItems($locationId: String!) { getSubwayWidgetItems(locationId: $locationId) }',
       variables: {
         locationId: playerDetails['reference_code_1'],
       },
@@ -56,15 +56,7 @@ function loadSubwayData() {
       if (xhr.readyState === 4) {
         if (xhr.status === 200) {
           var response = JSON.parse(xhr.responseText);
-          var priceObj = {};
-          for (
-            var index = 0;
-            index < response.data.getSubwayWidgetItems.length;
-            index++
-          ) {
-            var item = response.data.getSubwayWidgetItems[index];
-            priceObj[item.id] = item;
-          }
+          var priceObj = response.data.getSubwayWidgetItems;
 
           Object.values(items).forEach(function (item) {
             item.variations.forEach(function (variation) {
