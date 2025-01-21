@@ -4,7 +4,7 @@ const archiver = require('archiver');
 
 const version = 'v0.0.1';
 var distDir = process.cwd() + '/dist';
-var output = fs.createWriteStream(distDir + `/menuzen-widget-${version}.zip`);
+var output = fs.createWriteStream(distDir + `/menuzen-old-widget-${version}.zip`);
 var archive = archiver('zip');
 if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, 0744);
